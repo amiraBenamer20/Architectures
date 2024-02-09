@@ -1,8 +1,5 @@
 
-#----------------------------Provider
-provider "aws" {
-  region = "eu-west-3"
-}
+
 
 #----------------------------Data
 #AMI
@@ -14,8 +11,8 @@ data "aws_ssm_parameter" "amazon2_linux" {
 #*****Networking
 #vpc
 resource "aws_vpc" "mqueen_vpc" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_hostnames = true
+  cidr_block = var.vpc_cidr_block
+  enable_dns_hostnames = var.enable_dns_hostnames
 }
 
 #internet_gw
@@ -26,8 +23,8 @@ resource "aws_internet_gateway" "mqueen_gw" {
 #subnet
 resource "aws_subnet" "mqueen_public_subnet1" {
   vpc_id = aws_vpc.mqueen_vpc
-  cidr_block = "10.0.0.0/16"
-  map_public_ip_on_launch = true
+  cidr_block = var.subnet1_cidr_block
+  map_public_ip_on_launch = var.map_public_ip_on_launch
 }
 
 #routing table & association
@@ -73,7 +70,7 @@ resource "aws_security_group" "mqueen_front_end_sg" {
 #ec2_instance
 resource "aws_instance" "front_end_server" {
   ami = nonsensitive(data.aws_ssm_parameter.amazon2_linux.value)
-  instance_type = "t2.micro"
+  instance_type = var.instance_type
   subnet_id = aws_subnet.mqueen_public_subnet1.id
   vpc_security_group_ids = [aws_security_group.mqueen_front_end_sg.id]
   user_data = <<EOF
