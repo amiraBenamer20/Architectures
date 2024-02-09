@@ -1,3 +1,19 @@
+variable "company" {
+  type = string
+  description = "name of the company"
+  default = "Mqueen"
+}
+
+variable "project" {
+  type = string
+  description = "name of the project"
+}
+
+variable "billing_code" {
+  type = string
+  description = "billing code for resource tagging"
+}
+
 variable "region" {
   type = string
   description = "deployement region"
